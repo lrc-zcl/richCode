@@ -1,4 +1,4 @@
-# Lottery Demo - 彩票预测项目
+# richCode - 体彩预测项目
 
 基于 Transformer 的彩票号码预测深度学习项目。 
 
