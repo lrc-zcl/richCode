@@ -1,0 +1,41 @@
+import os
+import torch
+from torch.utils.data import DataLoader
+from models.base_model import BaseModel
+from datasets.custom_datasets import MyDatasets
+from torch.nn import functional as F
+from tensorboardX import SummaryWriter
+
+writer = SummaryWriter(logdir='../train_logs/20251013')
+
+if __name__ == "__main__":
+    excel_path = "../data/lottery_data.xlsx"
+    datasets = MyDatasets(excel_path)
+    if os.path.exists("../model_checkpoint/model.pth"):
+        model = torch.load("../model_checkpoint/model.pth")
+    else:
+        model = BaseModel(1024)
+    custom_dataloader = DataLoader(datasets, batch_size=32, shuffle=False, drop_last=True)
+    epochs = 10
+    loss_function = F.cross_entropy
+    learning_rate = 0.0001
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    step_counts = 0
+    for epoch in range(epochs):
+        for train_x, train_y in custom_dataloader:
+            step_counts = step_counts + 1
+            optimizer.zero_grad()
+            model_result = model.forward(train_x)
+            loss_value = loss_function(model_result.transpose(1, 2), train_y.long())
+            loss_value.backward()  # 执行反向传播
+            optimizer.step()
+
+            writer.add_scalar('train_loss', loss_value.item(), step_counts)
+            print(f"{epoch + 1}/{epochs} ------------------------------{loss_value.item()}")
+
+    # 保存模型
+    torch.save(model, "../model_checkpoint/model.pth")
+
+    # 保存模型结构图
+    dummy_input = torch.randn(32, 5, 7)
+    writer.add_graph(model=model, input_to_model=dummy_input)
