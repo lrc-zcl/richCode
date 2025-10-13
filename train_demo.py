@@ -9,13 +9,13 @@ from tensorboardX import SummaryWriter
 writer = SummaryWriter(logdir='../train_logs/20251013')
 
 if __name__ == "__main__":
-    excel_path = "../data/lottery_data.xlsx"
+    excel_path = "data/lottery_data.xlsx"
     datasets = MyDatasets(excel_path)
     if os.path.exists("../model_checkpoint/model.pth"):
         model = torch.load("../model_checkpoint/model.pth")
     else:
         model = BaseModel(1024)
-    custom_dataloader = DataLoader(datasets, batch_size=32, shuffle=False, drop_last=True)
+    custom_dataloader = DataLoader(datasets, batch_size=64, shuffle=False, drop_last=True)
     epochs = 10
     loss_function = F.cross_entropy
     learning_rate = 0.0001
