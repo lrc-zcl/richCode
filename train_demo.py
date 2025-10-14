@@ -12,15 +12,15 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     excel_path = "./data/lottery_data.xlsx"
     datasets = MyDatasets(excel_path)
-    if os.path.exists("./model_checkpoint/model.pth"):
-        model = torch.load("./model_checkpoint/model.pth")
+    if os.path.exists("./model_checkpoints/model.pth"):
+        model = torch.load("./model_checkpoints/model.pth")
     else:
-        model = BaseModel(1024)
+        model = BaseModel(512)
     model.to(device=device)
     custom_dataloader = DataLoader(datasets, batch_size=64, shuffle=False, drop_last=True)
     epochs = 10
     loss_function = F.cross_entropy
-    learning_rate = 0.00001
+    learning_rate = 0.00005
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     step_counts = 0
     for epoch in range(epochs):
@@ -36,10 +36,8 @@ if __name__ == "__main__":
 
             writer.add_scalar('train_loss', loss_value.item(), step_counts)
             print(f"{epoch + 1}/{epochs} ------------------------------{loss_value.item()}")
-
-    # 保存模型
-    torch.save(model, "./model_checkpoint/model.pth")
+    torch.save(model, "model_checkpoints/model.pth")
 
     # 保存模型结构图
-    dummy_input = torch.randint(0, 10, (64, 10, 7))  # 生成0-9之间的随机整数，匹配embedding层的范围
+    dummy_input = torch.randint(0, 10, (64, 10, 7)).to(device)  # 生成0-9之间的随机整数，匹配embedding层的范围
     writer.add_graph(model=model, input_to_model=dummy_input)

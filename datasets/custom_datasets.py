@@ -44,7 +44,10 @@ class MyTestDatasets(Dataset):
         test_label_data = self.final_test_data[idx + self.need_data, :]
         test_data = torch.from_numpy(test_data)
         test_label_data = torch.from_numpy(test_label_data)
-        return test_data, test_label_data
+        start_index = self.reversed_data[idx, 1]
+        end_index = self.reversed_data[idx + self.need_data - 1, 1]
+        predict_index = self.reversed_data[idx + self.need_data, 1]
+        return test_data, test_label_data, start_index, end_index, predict_index
 
 
 if __name__ == "__main__":
