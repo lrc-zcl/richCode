@@ -48,3 +48,8 @@ lottery-demo/
 - `epochs`: 训练轮数（默认 10）
 - `learning_rate`: 学习率（默认 0.0001）
 - `need_day`: 使用历史数据期数（默认 5）
+
+#  <p align="center">Star history</p>
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=lrc-zcl/richCode&type=Timeline)](https://star-history.com/#lrc-zcl/richCode&Timeline)
