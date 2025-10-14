@@ -9,12 +9,14 @@ from tensorboardX import SummaryWriter
 writer = SummaryWriter(logdir='./train_logs/20251013')
 
 if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     excel_path = "./data/lottery_data.xlsx"
     datasets = MyDatasets(excel_path)
     if os.path.exists("./model_checkpoint/model.pth"):
         model = torch.load("./model_checkpoint/model.pth")
     else:
         model = BaseModel(1024)
+    model.to(device=device)
     custom_dataloader = DataLoader(datasets, batch_size=64, shuffle=False, drop_last=True)
     epochs = 10
     loss_function = F.cross_entropy
@@ -23,6 +25,8 @@ if __name__ == "__main__":
     step_counts = 0
     for epoch in range(epochs):
         for train_x, train_y in custom_dataloader:
+            train_x = train_x.to(device)
+            train_y = train_y.to(device)
             step_counts = step_counts + 1
             optimizer.zero_grad()
             model_result = model.forward(train_x)

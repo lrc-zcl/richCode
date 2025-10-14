@@ -13,6 +13,7 @@ class MyDatasets(Dataset):
         self.train_data = self.excel_data.values[0:3300, 0:9]
         self.reversed_data = self.train_data[::-1].copy()
         self.final_train_data = self.reversed_data[:, 2:9].astype('float32')
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def __len__(self):
         return self.final_train_data.shape[0] - self.need_data
