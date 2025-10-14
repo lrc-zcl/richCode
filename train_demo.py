@@ -6,19 +6,19 @@ from datasets.custom_datasets import MyDatasets
 from torch.nn import functional as F
 from tensorboardX import SummaryWriter
 
-writer = SummaryWriter(logdir='../train_logs/20251013')
+writer = SummaryWriter(logdir='./train_logs/20251013')
 
 if __name__ == "__main__":
-    excel_path = "data/lottery_data.xlsx"
+    excel_path = "./data/lottery_data.xlsx"
     datasets = MyDatasets(excel_path)
-    if os.path.exists("../model_checkpoint/model.pth"):
-        model = torch.load("../model_checkpoint/model.pth")
+    if os.path.exists("./model_checkpoint/model.pth"):
+        model = torch.load("./model_checkpoint/model.pth")
     else:
         model = BaseModel(1024)
     custom_dataloader = DataLoader(datasets, batch_size=64, shuffle=False, drop_last=True)
     epochs = 10
     loss_function = F.cross_entropy
-    learning_rate = 0.0001
+    learning_rate = 0.00001
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     step_counts = 0
     for epoch in range(epochs):
@@ -34,8 +34,8 @@ if __name__ == "__main__":
             print(f"{epoch + 1}/{epochs} ------------------------------{loss_value.item()}")
 
     # 保存模型
-    torch.save(model, "../model_checkpoint/model.pth")
+    torch.save(model, "./model_checkpoint/model.pth")
 
     # 保存模型结构图
-    dummy_input = torch.randn(32, 5, 7)
+    dummy_input = torch.randint(0, 10, (64, 10, 7))  # 生成0-9之间的随机整数，匹配embedding层的范围
     writer.add_graph(model=model, input_to_model=dummy_input)
