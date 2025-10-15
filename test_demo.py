@@ -10,7 +10,7 @@ if __name__ == "__main__":
     excel_path = "./data/lottery_data.xlsx"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     datasets = MyTestDatasets(excel_path)
-    model = torch.load("./model_checkpoints/model.pth")
+    model = torch.load("model_checkpoints/model_gpu1.pth")
     test_dataloader = DataLoader(datasets, batch_size=1, shuffle=False, drop_last=True)
     for test_x, test_y, start_index, end_index, predict_index in test_dataloader:
         test_x = test_x.to(device)
