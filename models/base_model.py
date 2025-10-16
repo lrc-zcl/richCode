@@ -7,7 +7,7 @@ import math
 
 
 class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=5000, dropout=0.1):
+    def __init__(self, d_model, max_len=5000, dropout=0.4):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
 
@@ -36,8 +36,9 @@ class BaseModel(nn.Module):
         # 添加正弦位置编码
         self.pos_encoding = PositionalEncoding(d_model=self.embedding_dims, max_len=100, dropout=0.1)
 
-        self.transformerEncoderLayer = nn.TransformerEncoderLayer(d_model=self.embedding_dims, nhead=8)
-        self.transformer = nn.TransformerEncoder(self.transformerEncoderLayer, num_layers=3)
+        self.transformerEncoderLayer = nn.TransformerEncoderLayer(d_model=self.embedding_dims, nhead=4,
+                                                                  batch_first=True, dropout=0.2)
+        self.transformer = nn.TransformerEncoder(self.transformerEncoderLayer, num_layers=1)
         self.output_layers = nn.ModuleList([
             nn.Linear(self.embedding_dims, 10) for _ in range(7)  # 7个位置分别预测
         ])
@@ -65,7 +66,7 @@ class BaseModel(nn.Module):
             transformer_out = self.transformer(embedded_with_cls)  # [batch, 5, embedding_dims]
             cls_key_step = transformer_out[:, 0, :]  # [batch, embedding_dims]  取关键的标志位送至分类层
             output = self.output_layers[i](cls_key_step)  # [batch, 10]
-            #output = self.softmax(output)
+            # output = self.softmax(output)
             outputs.append(output)
         return torch.stack(outputs, dim=1)  # [batch, 7, 5]
 
