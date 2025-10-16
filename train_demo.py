@@ -22,7 +22,7 @@ if __name__ == "__main__":
     loss_function = F.cross_entropy
     learning_rate = 0.001
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.95)
     step_counts = 0
     for epoch in range(epochs):
         for train_x, train_y in custom_dataloader:

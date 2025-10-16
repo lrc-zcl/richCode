@@ -65,7 +65,7 @@ class BaseModel(nn.Module):
             transformer_out = self.transformer(embedded_with_cls)  # [batch, 5, embedding_dims]
             cls_key_step = transformer_out[:, 0, :]  # [batch, embedding_dims]  取关键的标志位送至分类层
             output = self.output_layers[i](cls_key_step)  # [batch, 10]
-            output = self.softmax(output)
+            #output = self.softmax(output)
             outputs.append(output)
         return torch.stack(outputs, dim=1)  # [batch, 7, 5]
 
